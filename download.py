@@ -1,30 +1,39 @@
 import os
 import re
 from tqdm import tqdm
+from google.auth import default, exceptions
 from google.cloud import storage
 
+# Set the environment variable to use your Google credentials
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'application_default_credentials.json'
 
 def download_from_gcs(gcs_path):
     # Extract the filename from the file URL
     filename = re.search('/(training|testing|validation)/(.+\.tfrecord-\d+-of-\d+)', gcs_path).group(2)
-    # if waymo open dataset folder does not exist, create it
+    # If the waymo open dataset folder does not exist, create it
     if not os.path.exists('waymo_open_dataset_'):
         os.makedirs('waymo_open_dataset_')
-    # local path
+    # Local path
     local_path = 'waymo_open_dataset_/' + filename
-    # check if the file already exists 
+    # Check if the file already exists
     if os.path.isfile(local_path):
         print(f'{filename} already exists in {local_path}')
     else:
-        # Set up the storage client with the credentials
-        client = storage.Client.from_service_account_json('vertical-jetty-387915-f52f5a6d9354.json')
-        # Get a reference to the bucket and object
-        bucket = client.bucket('waymo_open_dataset_motion_v_1_2_0')
-        blob = bucket.blob(gcs_path)
+        try:
+            # Get the default credentials using your Google credentials
+            credentials, _ = default()
+            # Create a storage client using the credentials
+            client = storage.Client(credentials=credentials, project='223476880990')
+            # Get a reference to the bucket and object
+            bucket_name = 'waymo_open_dataset_motion_v_1_2_0'
+            bucket = client.bucket(bucket_name)
+            blob = bucket.blob(gcs_path)
 
-        # Download the object to a file with a progress bar
-        with tqdm.wrapattr(open(local_path, 'wb'), 'write', miniters=1,
-                          total=blob.size, desc=f'Downloading {gcs_path}') as file_obj:
-            blob.download_to_file(file_obj)
+            # Download the object to a file with a progress bar
+            with tqdm.wrapattr(open(local_path, 'wb'), 'write', miniters=1,
+                               total=blob.size, desc=f'Downloading {gcs_path}') as file_obj:
+                blob.download_to_file(file_obj)
 
-        print(f'Object downloaded to {local_path}')
+            print(f'Object downloaded to {local_path}')
+        except exceptions.DefaultCredentialsError:
+            print('Unable to obtain default Google credentials. Make sure you have set up your credentials properly.')
