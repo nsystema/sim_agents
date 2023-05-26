@@ -4,7 +4,6 @@ from tqdm import tqdm
 from google.cloud import storage
 
 
-
 def download_from_gcs(gcs_path):
     # Extract the filename from the file URL
     filename = re.search('/(training|testing|validation)/(.+\.tfrecord-\d+-of-\d+)', gcs_path).group(2)
@@ -17,8 +16,8 @@ def download_from_gcs(gcs_path):
     if os.path.isfile(local_path):
         print(f'{filename} already exists in {local_path}')
     else:
-        # Set up the storage client with api key: AIzaSyAtD_clSdxcEp4YXa2gWtFuhi6xSEEb_K8
-        client = storage.Client.from_service_account_json('waymo-od-1-2-0-fb3a3a0b6e6e.json')
+        # Set up the storage client with the credentials
+        client = storage.Client.from_service_account_json('vertical-jetty-387915-f52f5a6d9354.json')
         # Get a reference to the bucket and object
         bucket = client.bucket('waymo_open_dataset_motion_v_1_2_0')
         blob = bucket.blob(gcs_path)
