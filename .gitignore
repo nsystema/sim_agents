@@ -1,2 +1,2 @@
 # Ignore all files containing .tfrecord in their file name
-*tfrecord
+*tfrecord*
