@@ -13,6 +13,7 @@ import glob
 from tqdm import tqdm
 from waymo_open_dataset.protos import scenario_pb2
 from waymo_types import object_type, lane_type, road_line_type, road_edge_type, signal_state, polyline_type
+from waymo_open_dataset.utils.sim_agents import submission_specs
 
     
 def decode_tracks_from_proto(tracks):
@@ -189,6 +190,8 @@ def process_waymo_data_with_scenario_proto(data_file, output_path=None):
 
         track_infos = decode_tracks_from_proto(scenario.tracks)
         info['tracks_to_predict']['object_type'] = [track_infos['object_type'][cur_idx] for cur_idx in info['tracks_to_predict']['track_index']]
+        track_infos['tracks_to_predict_until_current'] = track_infos['track_infos']['trajs'][track_infos['tracks_to_predict']['track_index'],:submission_specs.CURRENT_TIME_INDEX + 1,:]
+        track_infos['tracks_to_predict_future'] = track_infos['track_infos']['trajs'][track_infos['tracks_to_predict']['track_index'],submission_specs.CURRENT_TIME_INDEX + 1:,:]
 
         # decode map related data
         map_infos = decode_map_features_from_proto(scenario.map_features)
