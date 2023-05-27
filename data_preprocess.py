@@ -132,7 +132,6 @@ def decode_map_features_from_proto(map_features):
             map_infos['speed_bump'].append(cur_info)
 
         else:
-            print(cur_data)
             print ('Unknown type')
             map_infos['unknown'].append(cur_info)
 
