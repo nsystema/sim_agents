@@ -2,3 +2,5 @@
 *tfrecord*
 # ignore all files whose name contains "sample"
 *sample*
+# ignore pickle files
+*.pkl
