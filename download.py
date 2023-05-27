@@ -10,11 +10,17 @@ os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'application_default_credentials.
 def download_from_gcs(gcs_path):
     # Extract the filename from the file URL
     filename = re.search('/(training|testing|validation)/(.+\.tfrecord-\d+-of-\d+)', gcs_path).group(2)
+    # see wether it is a training, testing or validation file
+    file_type = re.search('/(training|testing|validation)/(.+\.tfrecord-\d+-of-\d+)', gcs_path).group(1)
     # If the waymo open dataset folder does not exist, create it
     if not os.path.exists('waymo_open_dataset_'):
         os.makedirs('waymo_open_dataset_')
+    # If the training, testing or validation folder does not exist, create it
+    for folder in ['training', 'testing', 'validation']:
+        if not os.path.exists('waymo_open_dataset_/' + folder):
+            os.makedirs('waymo_open_dataset_/' + folder)
     # Local path
-    local_path = 'waymo_open_dataset_/' + filename
+    local_path = 'waymo_open_dataset_/' + file_type + '/' + filename
     # Check if the file already exists
     if os.path.isfile(local_path):
         print(f'{filename} already exists in {local_path}')
