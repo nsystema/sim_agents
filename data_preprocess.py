@@ -250,9 +250,16 @@ def create_infos_from_protos(raw_data_path, output_path, num_workers=16):
         pickle.dump(val_infos, f)
     print('----------------Waymo info val file is saved to %s----------------' % val_filename)
     
-
-if __name__ == '__main__':
-    create_infos_from_protos(
-        raw_data_path=sys.argv[1],
-        output_path=sys.argv[2]
-    )
+# create directory "senarios" if it does not exist
+if not os.path.exists('scenarios'):
+    os.makedirs('scenarios')
+# create directory "processed_scenarios_training" if it does not exist
+if not os.path.exists('processed_scenarios_training'):
+    os.makedirs('processed_scenarios_training')
+# create directory "processed_scenarios_validation" if it does not exist
+if not os.path.exists('processed_scenarios_validation'):
+    os.makedirs('processed_scenarios_validation')
+# create directory "processed_scenarios_testing" if it does not exist
+if not os.path.exists('processed_scenarios_testing'):
+    os.makedirs('processed_scenarios_testing')
+create_infos_from_protos('waymo_open_dataset_', 'scenarios')
