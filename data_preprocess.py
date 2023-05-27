@@ -49,7 +49,8 @@ def decode_map_features_from_proto(map_features):
         'road_edge': [],
         'stop_sign': [],
         'crosswalk': [],
-        'speed_bump': []
+        'speed_bump': [],
+        'unknown': []
     }
     polylines = []
 
@@ -132,7 +133,8 @@ def decode_map_features_from_proto(map_features):
 
         else:
             print(cur_data)
-            raise ValueError
+            print ('Unknown type')
+            map_infos['unknown'].append(cur_info)
 
         polylines.append(cur_polyline)
         cur_info['polyline_index'] = (point_cnt, point_cnt + len(cur_polyline))
