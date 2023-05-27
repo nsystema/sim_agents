@@ -133,7 +133,6 @@ def decode_map_features_from_proto(map_features):
             map_infos['speed_bump'].append(cur_info)
 
         else:
-            print ('Unknown type')
             map_infos['unknown'].append(cur_info)
 
         polylines.append(cur_polyline)
@@ -190,8 +189,8 @@ def process_waymo_data_with_scenario_proto(data_file, output_path=None):
 
         track_infos = decode_tracks_from_proto(scenario.tracks)
         info['tracks_to_predict']['object_type'] = [track_infos['object_type'][cur_idx] for cur_idx in info['tracks_to_predict']['track_index']]
-        track_infos['tracks_to_predict_until_current'] = track_infos['track_infos']['trajs'][track_infos['tracks_to_predict']['track_index'],:submission_specs.CURRENT_TIME_INDEX + 1,:]
-        track_infos['tracks_to_predict_future'] = track_infos['track_infos']['trajs'][track_infos['tracks_to_predict']['track_index'],submission_specs.CURRENT_TIME_INDEX + 1:,:]
+        track_infos['tracks_to_predict_until_current'] = track_infos['trajs'][info['tracks_to_predict']['track_index'],:submission_specs.CURRENT_TIME_INDEX + 1,:]
+        track_infos['tracks_to_predict_future'] = track_infos['trajs'][info['tracks_to_predict']['track_index'],submission_specs.CURRENT_TIME_INDEX + 1:,:]
 
         # decode map related data
         map_infos = decode_map_features_from_proto(scenario.map_features)
