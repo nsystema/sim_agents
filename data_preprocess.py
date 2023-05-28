@@ -191,6 +191,12 @@ def process_waymo_data_with_scenario_proto(data_file, output_path=None):
         info['tracks_to_predict']['object_type'] = [track_infos['object_type'][cur_idx] for cur_idx in info['tracks_to_predict']['track_index']]
         track_infos['tracks_to_predict_until_current'] = track_infos['trajs'][info['tracks_to_predict']['track_index'],:submission_specs.CURRENT_TIME_INDEX + 1,:]
         track_infos['tracks_to_predict_future'] = track_infos['trajs'][info['tracks_to_predict']['track_index'],submission_specs.CURRENT_TIME_INDEX + 1:,:]
+        track_infos['track_of_adv_until_current'] = track_infos['trajs'][info['sdc_track_index'],:submission_specs.CURRENT_TIME_INDEX + 1,:]
+        track_infos['track_of_adv_future'] = track_infos['trajs'][info['sdc_track_index'],submission_specs.CURRENT_TIME_INDEX + 1:,:]
+        # get the index of other agents
+        other_agent_indices = np.setdiff1d(np.arange(track_infos['trajs'].shape[0]), info['sdc_track_index'])
+        track_infos['tracks_of_other_agents_until_current'] = track_infos['trajs'][other_agent_indices,:submission_specs.CURRENT_TIME_INDEX + 1,:]
+        track_infos['tracks_of_other_agents_future'] = track_infos['trajs'][other_agent_indices,submission_specs.CURRENT_TIME_INDEX + 1:,:]
 
         # decode map related data
         map_infos = decode_map_features_from_proto(scenario.map_features)
